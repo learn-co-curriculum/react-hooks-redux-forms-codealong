@@ -17,17 +17,17 @@ In that file, we change our `render` function to look like the following:
 
 ```javascript
 
-    render(){
-      return(
-        <form>
-          <p>
-            <label>add todo</label>
-            <input type="text" />
-          </p>
-          <input type="submit" />
-        </form>
-      )
-    }
+	render(){
+		return(
+			<form>
+				<p>
+					<label>add todo</label>
+					<input type="text" />
+				</p>
+				<input type="submit" />
+			</form>
+		)
+	}
 
 ```
 
@@ -45,8 +45,8 @@ If the user has typed in `buy groceries`, our action would look like:
 
 ```javascript
 
-	{type: 'ADD_TODO', payload: 'buy groceries'}  
-
+	{type: 'ADD_TODO', payload: 'buy groceries'}
+	
 ```
 
 But how do we get that text from the form's input?  We can use our standard React trick of updating the *`createTodo` component's* state whenever someone types something into the form.  Then, when the user clicks on the submit button, we can grab that state, and call `store.dispatch({type: 'ADD_TODO', payload: this.state})`.  Let's implemement it! Step one will be updating the component state whenever someone types in the form.
@@ -58,21 +58,21 @@ Every time the input is changed, we want to change the state.  To do this we fir
 ```javascript
 
 	// src/components/todos/createTodo
-	      ...
-	      render(){
-	        return(
-	          <div>
-	            <form>
-	              <p>
-	                <label>add todo</label>
-	                <input type="text" onChange={this.handleChange.bind(this)}/>
-	              </p>
-	              <input type="submit" />
-	            </form>
-	            {this.state.text}
-	          </div>
-	        )
-	      }
+	...
+	render(){
+		return(
+			<div>
+				<form>
+					<p>
+						<label>add todo</label>
+						<input type="text" onChange={this.handleChange.bind(this)}/>
+					</p>
+					<input type="submit" />
+				</form>
+				{this.state.text}
+			</div>
+		)
+	}
 
 ```
 
@@ -85,11 +85,11 @@ All this code does is say that every time the user changes the input field (that
 Ok, our code calls the `handleChange` callback each time the user types in the input, but we still need to write that `handleChange` method.  We add a method called `handleChange` to set the state every time it is called from the `onChange` event.
 
 ```javascript
-  // src/components/todos/createTodo
+	// src/components/todos/createTodo
 
-	    handleChange(event){
-	      this.setState({text: event.target.value})
-	    }
+	handleChange(event){
+		this.setState({text: event.target.value})
+	}
 ```
 
 Notice that we pass through the event, which comes from the `onChange` event handler.  The event's target is the input that was listening for the event (the text field), and the value is the current value of that text field.  So in other words, if the user types in 'hello', the last time the `handleChange` method is called, the event target's value will be 'hello', and the handle change method sets that as the state.  
@@ -100,10 +100,10 @@ Now our state will update appropriately each time a user types something into th
 
 //src/components/todos/createTodo
 
-	    constructor(props){
-	      super(props)
-	      this.state = {text: ''}
-	    }
+constructor(props){
+	super(props)
+	this.state = {text: ''}
+}
 
 ```
 
@@ -111,37 +111,37 @@ Now the entire component should like the following.
 
 ```javascript
 
-		import React, { Component } from 'react'
+	import React, { Component } from 'react'
 
-		class CreateTodo extends Component {
-		  constructor(props){
-		    super(props)
-		    this.state = {text: ''}
-		  }
-		  handleChange(event){
-		    this.setState({text: event.target.value})
-		  }
-		  handleSubmit(event){
-		    event.preventDefault()
-		    this.props.store.dispatch({type: 'ADD_TODO', payload: this.state})
-		  }
-		  render(){
-		    return(
-		      <div>
-		        <form onSubmit={this.handleSubmit.bind(this)}>
-		          <p>
-		            <label>add todo</label>
-		            <input type="text" onChange={this.handleChange.bind(this)}/>
-		          </p>
-		          <input type="submit" />
-		        </form>
-		        {this.state.text}
-		      </div>
-		    )
-		  }
+	class CreateTodo extends Component {
+		constructor(props){
+			super(props)
+			this.state = {text: ''}
 		}
+		handleChange(event){
+			this.setState({text: event.target.value})
+		}
+		handleSubmit(event){
+			event.preventDefault()
+			this.props.store.dispatch({type: 'ADD_TODO', payload: this.state})
+		}
+		render(){
+			return(
+				<div>
+					<form onSubmit={this.handleSubmit.bind(this)}>
+						<p>
+							<label>add todo</label>
+							<input type="text" onChange={this.handleChange.bind(this)}/>
+						</p>
+						<input type="submit" />
+					</form>
+					{this.state.text}
+				</div>
+			)
+		}
+	}
 
-		export default CreateTodo;
+	export default CreateTodo;
 ```
  
 Notice inside the `render` function, we wrapped our form in a `div`, and then at the bottom of that `div` we added the line `{this.state.text}`.  We do this just to ensure that we are properly changing the state.  If we see our DOM change with every character we type in, we're in good shape.  
@@ -152,16 +152,16 @@ Now we need to make changes to our form so that when the user clicks submit, we 
 
 ```javascript
 
-			let store = createStore(manageTodo)
+	let store = createStore(manageTodo)
 
-	    export function render(){
-	      ReactDOM.render(
-	        <App store={store} />,
-	        document.getElementById('root')
-	      );
-	    }
+	export function render(){
+		ReactDOM.render(
+			<App store={store} />,
+			document.getElementById('root')
+		);
+	}
 
-	    store.dispatch({type: '@@INIT'})
+	store.dispatch({type: '@@INIT'})
 ```
 
 In the top line, you can see that we create the store with a reducer.  Then, further down, we pass through the store as a prop to our app.  Our `App` component passes the store as a prop down to the `CreateTodo` component.  So if you put a `debugger` right after the line render in `CreateTodo`, and type in `this.props` in the code, you can see we have access to the store as one of the props.
@@ -172,20 +172,22 @@ Ok, let's implement this -- it will make more sense as we move along.  First, we
 
 ```javascript
 
-			...
-
-	    <form onSubmit={this.handleSubmit.bind(this)}>
-
-	    ...
+	...
+	<form onSubmit={this.handleSubmit.bind(this)}>
+	...
 
 ```
 
 Second, we write a function in the `CreateTodo` component that dispatches an action upon being called.
 
-		  handleSubmit(event){
-		    event.preventDefault()
-		    this.props.store.dispatch({type: 'ADD_TODO', payload: this.state})
-		  }
+```javascript
+
+	handleSubmit(event){
+		event.preventDefault()
+		this.props.store.dispatch({type: 'ADD_TODO', payload: this.state})
+	}
+
+```
 
 Notice that our payload is `this.state`. This is because our state always holds the value of our input, and we want to pass that value into our dispatched action.  So for example, if a user types in "add groceries", we will be dispatching, `{type: 'ADD_TODO', payload: {text: "add groceries"}}`.
 
@@ -201,19 +203,19 @@ Second, we need to concatenate a new todo each time we receive an action that lo
 
 ```javascript
 
-		//reducers/manageTodo.js
+	//reducers/manageTodo.js
 
-	    export default function manageTodo(state = {todos: []}, action){
-	      switch (action.type) {
-	        case 'ADD_TODO':
-	          return {todos: state.todos.concat(action.payload)}
-	        default:
-	          return state;
-	      }
-	    }
+	export default function manageTodo(state = {todos: []}, action){
+		switch (action.type) {
+			case 'ADD_TODO':
+				return {todos: state.todos.concat(action.payload)}
+			default:
+				return state;
+		}
+	}
 
-	    store.dispatch({type: 'ADD_TODO', payload: {text: 'watch baseball'}})
-	      -> {todos: [{text: 'watch baseball'}]}
+	store.dispatch({type: 'ADD_TODO', payload: {text: 'watch baseball'}})
+		-> {todos: [{text: 'watch baseball'}]}
 
 ```
 
