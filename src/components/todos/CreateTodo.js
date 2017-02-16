@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 
 class CreateTodo extends Component {
-  render(){
+  render() {
     return(
       <div>
         Create Todo Component
