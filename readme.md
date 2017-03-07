@@ -61,7 +61,7 @@ So if the user has typed in buy groceries, our action would look like:
 }
 ```
 
-But how do we get that text from the form's input?  Here's how. We can use our normal react trick of updating the *createTodo component's* state whenever someone types something into the form.  Then, when the user clicks on the submit button, we can grab that state, and call `store.dispatch({ type: 'ADD_TODO', todo: this.state })`. Ok, time to implement it. Step one will be updating the component state whenever someone types in the form.
+But how do we get that text from the form's input?  Here's how. We can use our normal React trick of updating the *createTodo component's* state whenever someone types something into the form.  Then, when the user clicks on the submit button, we can grab that state, and call `store.dispatch({ type: 'ADD_TODO', todo: this.state })`. Ok, time to implement it. Step one will be updating the component state whenever someone types in the form.
 
 1. Update component state by adding an onChange event handler
 
@@ -91,7 +91,7 @@ But how do we get that text from the form's input?  Here's how. We can use our n
 
   ```
 
-All this code does is say that every time the user change's the input field (that is, whenever he types something in) we should call our __handleChange()__ function (which we didn't write yet).  
+All this code does is say that every time the user changes the input field (that is, whenever he types something in) we should call our __handleChange()__ function (which we didn't write yet).  
 
 > Why (event) => this.handleChange) ?
 >
@@ -136,7 +136,7 @@ constructor() {
 
 ```
 
-The *CreateTodo* component should like the following now.
+The *CreateTodo* component should look like the following now.
 
 ```JavaScript
 
@@ -280,7 +280,7 @@ export default function manageTodo(state = {
   switch (action.type) {
     case 'ADD_TODO':
       return { todos: state.todos.concat(action.todo.text) };
-      
+
     default:
       return state;
   }
@@ -291,4 +291,4 @@ Ok, once you change the __manageTodo()__ reducer to the above function, open up 
 
 ## Summary
 
-There's a lot of typing in this section, but three main steps.  First, we made sure the react component of our application was working. We did this by building a form, and then making sure that whenever the user typed in the form's input, the state was updated.Once we got __React__ working, we needed to connect it to __Redux__. We connected Redux by passing through our store object as a prop, and then dispatching an action every time the user submitted the form.  Finally, we built our reducer such that it responded to the appropriate event and concatenated the payload into our array of todos.  In the next section we'll display our state on the page.  That section is a bit of a review, so feel free to finish this application up on your own. After a well-deserved break!
+There's a lot of typing in this section, but three main steps.  First, we made sure the React component of our application was working. We did this by building a form, and then making sure that whenever the user typed in the form's input, the state was updated. Once we got __React__ working, we needed to connect it to __Redux__. We connected Redux by passing through our store object as a prop, and then dispatching an action every time the user submitted the form.  Finally, we built our reducer such that it responded to the appropriate event and concatenated the payload into our array of todos.  In the next section we'll display our state on the page.  That section is a bit of a review, so feel free to finish this application up on your own... after a well-deserved break!
