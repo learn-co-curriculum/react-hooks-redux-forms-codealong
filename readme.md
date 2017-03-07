@@ -78,7 +78,7 @@ But how do we get that text from the form's input?  Here's how. We can use our n
         <form>
           <p>
             <label>add todo</label>
-            <input type="text" onChange={(event) => this.handleChange}/>
+            <input type="text" onChange={(event) => this.handleChange(event)}/>
           </p>
           <input type="submit" />
         </form>
