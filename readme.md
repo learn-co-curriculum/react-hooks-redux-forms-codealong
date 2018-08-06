@@ -111,7 +111,11 @@ is, whenever he types something in) we should call our `handleChange()`
 function (which we didn't write yet).  
 
 > We can shorten this. onChange takes a function, so simply saying
-onChange={this.handleChange} works. The event is passed in as the argument.
+onChange={this.handleChange} works. The event is passed in as the argument. This
+will only work, however, if you are using an arrow function to define
+handleChange. Without the arrow, you will either need to bind the function,
+`this.handleChange.bind(this)`, or use the `(event) =>
+this.handleChange(event)`.
 
 Ok, our code calls the `handleChange()` callback each time the user types in the
 input, but we still need to write that handleChange function. Let's start with
@@ -165,7 +169,7 @@ class CreateTodo extends Component {
     };
   }
 
-  handleChange(event) {
+  handleChange = event => {
     this.setState({
       text: event.target.value
     });
@@ -227,8 +231,8 @@ ReactDOM.render(
 ```
 
 Just below the `import` statements, you can see that we create the store using
-the provided `create`. Then, further down, we pass the store into the
-`Provider`. This will allow us access when we _connect_ our components.
+`createStore`, provided by `redux`. Then, further down, we pass the store into
+the `Provider`. This will allow us access when we _connect_ our components.
 
 Ok, let's connect the CreateTodo. First, we want to import `connect` from
 `react-redux` and modify our export statement:
@@ -239,11 +243,14 @@ import { connect } from 'react-redux';
 
 ...
 
-export default connect(null, mapDispatchToProps)(connectCreateTodo);
+export default connect(null, mapDispatchToProps)(CreateTodo);
 ```
 
-Since we are only going to be dispatching actions here and not getting information from our
-store, we can use `null` instead of `mapStateToProps` as the first argument.
+In this component, we're not currently concerned with writing a
+`mapStateToProps` function (the first argument passed to `connect`) as this
+component doesn't need any state. Since we only need to dispatch an action here
+and not getting information from our store, we can use `null` instead of
+`mapStateToProps` as the first argument.
 
 Next, as we write out our `mapDispatchToProps()` function, we'll need to decide
 on how to structure our data and the related action. The basic frame of the
@@ -283,9 +290,8 @@ mapDispatchToProps = dispatch => {
 }
 ```
 
-In our component, we could call something like
-`this.props.addTodo(this.state)`. Since `this.state` is an object with only one
-property, `text`.
+In our component, we could call something like `this.props.addTodo(this.state)`.
+Since `this.state` is an object with only one property, `text`.
 
 Now we need to update the __render()__ function of the __CreateTodo__ component
 to call a callback on the submission of a form:
@@ -320,7 +326,105 @@ handleSubmit = event => {
 ```
 
 When `handleSubmit()` is called, whatever is currently stored in `this.state`
-will be sent off to our reducer via our dispatched action.
+will be sent off to our reducer via our dispatched action. The fully
+redux'd component ends up looking the like the following:
+
+```js
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+class CreateTodo extends Component {
+
+  state = {
+    text: ''
+  }
+
+  handleChange = event => {
+    this.setState({
+      text: event.target.value
+    });
+  }
+
+  handleSubmit = event => {
+    event.preventDefault()
+    this.props.addTodo(this.state)
+  }
+
+  render() {
+    return(
+      <div>
+        <form onSubmit={ (event) => this.handleSubmit(event) }>
+    	  <p>
+      	    <label>add todo</label>
+            <input
+	      type="text"
+	      onChange={ (event) => this.handleChange(event) } value={ this.state.text }/>
+          </p>
+          <input type="submit" />
+       </form>
+     </div>
+   );
+  }
+};
+
+mapDispatchToProps = dispatch => {
+  return {
+    addTodo: formData => dispatch({ type: 'EXAMPLE', payload: formData })
+  }
+}
+
+export default connect(null, mapDispatchToProps)(CreateTodo);
+```
+
+Now, when the form is submitted, whatever the `this.state` is will be dispatched
+to the reducer with the action.
+
+#### Alternate `export` statement
+
+Remember that, if not given any arguments, `connect` will return `dispatch` as a
+prop to the component we're wrapping with `connect`. So an alternative way to
+write the CreateTodo component could be:
+
+```js
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
+
+class CreateTodo extends Component {
+
+  state = {
+    text: ''
+  }
+
+  handleChange = event => {
+    this.setState({
+      text: event.target.value
+    });
+  }
+
+  handleSubmit = event => {
+    event.preventDefault()
+    this.props.dispatch({ type: "EXAMPLE", payload: this.state })
+  }
+
+  render() {
+    return(
+      <div>
+        <form onSubmit={ (event) => this.handleSubmit(event) }>
+    	  <p>
+      	    <label>add todo</label>
+            <input
+	      type="text"
+	      onChange={ (event) => this.handleChange(event) } value={ this.state.text }/>
+          </p>
+          <input type="submit" />
+       </form>
+     </div>
+   );
+  }
+};
+
+export default connect()(CreateTodo);
+```
 
 Now, if you start up the app and click the submit button, you should see your
 actions via a `console.log` in our reducer.
