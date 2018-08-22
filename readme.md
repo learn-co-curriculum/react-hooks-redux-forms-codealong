@@ -369,7 +369,7 @@ class CreateTodo extends Component {
 
 mapDispatchToProps = dispatch => {
   return {
-    addTodo: formData => dispatch({ type: 'EXAMPLE', payload: formData })
+    addTodo: formData => dispatch({ type: 'ADD_TODO', payload: formData })
   }
 }
 
@@ -403,7 +403,7 @@ class CreateTodo extends Component {
 
   handleSubmit = event => {
     event.preventDefault()
-    this.props.dispatch({ type: "EXAMPLE", payload: this.state })
+    this.props.dispatch({ type: 'ADD_TODO', payload: this.state })
   }
 
   render() {
