@@ -251,7 +251,7 @@ function will look like the following:
 ```js
 // ./src/components/todos/CreateTodo.js
 
-mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
   return {
     addTodo: () => dispatch(<some action>)
   }
@@ -263,7 +263,7 @@ captured in the local state to be added to our **Redux** store. With the above
 set up, `addTodo` becomes a function in props that is able take arguments.
 
 ```js
-mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
   return {
     addTodo: formData => dispatch(<some action>)
   }
@@ -275,7 +275,7 @@ in, but for now, we'll just write in an action to get a clearer idea of how this
 is working:
 
 ```js
-mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
 	return {
 		addTodo: formData => dispatch({ type: 'ADD_TODO', payload: formData })
 	};
@@ -356,7 +356,7 @@ class CreateTodo extends Component {
 	}
 }
 
-mapDispatchToProps = dispatch => {
+const mapDispatchToProps = dispatch => {
 	return {
 		addTodo: formData => dispatch({ type: 'ADD_TODO', payload: formData })
 	};
@@ -481,5 +481,5 @@ There's a lot of typing in this section, but three main steps.
 
 - Second, We connected the component to **Redux** and designed our `mapDispatchToProps`
 
-- Third, we built our reducer such that it responded to the appropriate event and
-  concatenated the payload into our array of todos.
+- Third, we built our reducer such that it responded to the appropriate event
+  and concatenated the payload into our array of todos.
