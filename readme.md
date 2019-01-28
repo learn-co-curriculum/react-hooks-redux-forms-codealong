@@ -1,9 +1,13 @@
 # Creating Items with Redux
 
+## Introduction
+
+With this lesson, we'll begin our journey in implementing the CRUD actions while
+using the Redux pattern.
+
 ## Objectives
 
-With this lesson we'll begin our journey in implementing the CRUD actions while
-using the Redux pattern. By the end of this lesson, you will be able to:
+By the end of this lesson, you will be able to:
 
 - Take user input from our **React** application and send information to **Redux**
 
@@ -15,9 +19,10 @@ submit button.
 
 ## Create The Form in React
 
-Ok, if you boot up the application (run `npm install && npm start`), you'll see
-that there in the `./src/App.js` file we reference a createTodo form located at
-`./src/components/todos/createTodo.js`. That's where we need to build our form.
+Okay, if you boot up the application (run `npm install && npm start`), you'll
+see that there in the `./src/App.js` file we reference a createTodo form located
+at `./src/components/todos/createTodo.js`. That's where we need to build our
+form.
 
 So in that file we want to change our component to look like the following:
 
@@ -67,13 +72,13 @@ So if the user has typed in buy groceries, our action would look like:
 }
 ```
 
-But how do we get that text from the form's input? Here's how. We can use our
-normal React trick of updating the _createTodo component's_ state whenever
-someone types something into the form. Then, when the user clicks on the submit
-button, we can grab that state, and call `store.dispatch({ type: 'ADD_TODO', todo: this.state })`. Ok, time to implement it. Step one will be updating the
+But how do we get that text from the form's input? Well, we can use our normal
+React trick of updating the _createTodo component's_ state whenever someone
+types something into the form. Then, when the user clicks on the submit button,
+we can grab that state, and call `store.dispatch({ type: 'ADD_TODO', todo: this.state })`. Ok, time to implement it. Step one will be updating the
 component state whenever someone types in the form.
 
-1.  Update component state by adding an onChange event handler
+### 1. Create a Controlled Form Using State and an `onChange` Event Handler
 
 Every time the input is changed, we want to change the state. To do this we
 first add an event handler for every input that changes. So inside the
@@ -94,7 +99,6 @@ render(){
         </p>
         <input type="submit" />
       </form>
-      {this.state.text}
     </div>
   );
 }
@@ -104,17 +108,11 @@ render(){
 
 All this code does is say that every time the user changes the input field (that
 is, whenever he types something in) we should call our `handleChange()`
-function (which we didn't write yet).
+function (which we haven't written yet).
 
-> We can shorten this. onChange takes a function, so simply saying
-> onChange={this.handleChange} works. The event is passed in as the argument. This
-> will only work, however, if you are using an arrow function to define
-> handleChange. Without the arrow, you will either need to bind the function,
-> `this.handleChange.bind(this)`, or use the `(event) => this.handleChange(event)`.
-
-Ok, our code calls the `handleChange()` callback each time the user types in the
-input, but we still need to write that handleChange function. Let's start with
-the old way, setting a state value:
+Okay, our code calls the `handleChange()` function each time the user types in
+the input, but we still need to write that handleChange function. Let's start
+with the old way, setting a state value:
 
 ```JavaScript
 // ./src/components/todos/createTodo
@@ -133,17 +131,91 @@ handleChange(event) {
   });
 };
 
+render(){
+  return(
+    <div>
+      <form>
+        <p>
+          <label>add todo</label>
+          <input type="text" onChange={(event) => this.handleChange(event)}/>
+        </p>
+        <input type="submit" />
+      </form>
+    </div>
+  );
+}
 ...
 ```
 
-Notice that we pass through the event, which comes from the onChange event
+Notice that we pass through the event, which comes from the `onChange` event
 handler. The event's target is the input that was listening for the event (the
 text field), and the value is the current value of that text field.
 
-To make it a completely controlled form, we would also want to set the `value`
-attribute of out `input` element to `this.state.text`. This way, every key
+Currently, we're using class method syntax to define `handleChange()` on our
+component. The JSX code within our `render()` method is particular to a specific
+instance of the component, but, by default, **class methods are called the
+context of the [prototype chain][], not an instance**. In order for `this` to
+correctly reference _this_ specific instance of our component, we need to either
+bind it (often done in the `constructor()`), or use an arrow function in our
+`onChange` event handler. Because arrow functions don't define their own version
+of `this`, they'll default to the context they are in.
+
+We never intend for `handleChange()` to be used any other way. In modern
+JavaScript, we are able to directly class assign properties instead of assigning
+them inside a `constructor()`. This means that, instead of writing
+`handleChange()` as a class method, we could declare it as a class property
+and assign an arrow function to it:
+
+```js
+handleChange = event => {
+	this.setState({
+		text: event.target.value
+	});
+};
+```
+
+The result is that `handleChange()` will always be bound to the particular
+instance of the component it is defined in.
+
+```js
+constructor() {
+  super();
+  this.state = {
+    text: '',
+  };
+}
+
+handleChange = (event) => {
+  this.setState({
+    text: event.target.value
+  });
+};
+
+render(){
+  return(
+    <div>
+      <form>
+        <p>
+          <label>add todo</label>
+          <input type="text" onChange={(event) => this.handleChange(event)}/>
+        </p>
+        <input type="submit" />
+      </form>
+    </div>
+  );
+}
+```
+
+Now that `handleChange()` is defined using an arrow function, we can actually
+write an even shorter `onChange` callback: `onChange={this.handleChange}`. In
+this case, `this.handleChange` refers to the definition of a function that
+takes in the event as an argument. No need for the `onChange` arrow function
+callback anymore!
+
+To make a completely controlled form, we will also need to set the `value`
+attribute of our `input` element to `this.state.text`. This way, every key
 stroke within `input` will call a `setState` from within `handleChange`, the
-component will re-render and the new value for `this.state.text` will appear.
+component will re-render and display the new value for `this.state.text`.
 
 The _CreateTodo_ component should look like the following now:
 
@@ -175,10 +247,11 @@ class CreateTodo extends Component {
       	    <label>add todo</label>
             <input
 	      type="text"
-	      onChange={(event) => this.handleChange(event)} value={this.state.text}/>
+	      onChange={this.handleChange} value={this.state.text}/>
           </p>
           <input type="submit" />
        </form>
+       {this.state.text}
      </div>
    );
   }
@@ -187,16 +260,17 @@ class CreateTodo extends Component {
 export default CreateTodo;
 ```
 
-Notice inside the the render function, we wrapped our form in a div, and then at
-the bottom of that div we added the line {this.state.text}. We do this, just to
-ensure that we are properly changing the state. If we see our DOM change with
-every character we type in, we're in good shape.
+**Note**: Inside the render function, we wrapped our form in a `div`, and then
+at the bottom of that `div` we've added the line `{this.state.text}`. This isn't
+necessary for functionality, but we do this just to visually confirm that we are
+properly changing the state. If we see our DOM change with every character we
+type in, we're in good shape.
 
 It's on to step 2.
 
-2.  On submission of the form, dispatch an action to the store
+### 2. On Submission of Form, Dispatch an Action to the Store
 
-Ok, so now we need to make changes to our form so that when the user clicks
+Okay, so now we need to make changes to our form so that when the user clicks
 submit, we dispatch an action to the store. Notice that a lot of the setup for
 Redux is already done for you. Open up the `./src/index.js` file. There you'll
 see the following:
@@ -422,7 +496,7 @@ export default connect()(CreateTodo);
 Now, if you start up the app and click the submit button, you should see your
 actions via a `console.log` in our reducer.
 
-3.  Update the state
+### 3. Update State
 
 So we are properly dispatching the action, but the state is not being updated.
 What could be the problem? Well remember our crux of redux flow: Action ->
@@ -483,3 +557,5 @@ There's a lot of typing in this section, but three main steps.
 
 - Third, we built our reducer such that it responded to the appropriate event
   and concatenated the payload into our array of todos.
+
+[prototype chain]: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
