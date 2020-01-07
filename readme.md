@@ -344,9 +344,9 @@ const mapDispatchToProps = dispatch => {
 }
 ```
 
-In terms of action, we _could_ write out a separate actions file and import it
-in, but for now, we'll just write in an action to get a clearer idea of how this
-is working:
+From the Redux docs, we know that <some action> needs to be a plain javascript object
+with a `type` key describing the type of action. We also need to include the data from
+the form - in this case, we'll call that key 'payload'.
 
 ```js
 const mapDispatchToProps = dispatch => {
