@@ -2,7 +2,7 @@
 
 ## Introduction
 
-With this lesson, we'll begin our journey in implementing the CRUD actions while
+With this lesson, we will begin our journey in implementing the CRUD actions while
 using the Redux pattern.
 
 ## Objectives
