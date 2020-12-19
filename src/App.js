@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
-import CreateTodo from './components/todos/CreateTodo'
+import React from "react";
+import CreateTodo from "./features/todos/CreateTodo";
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <CreateTodo />
-      </div>
-    );
-  }
+function App() {
+  return (
+    <div className="App">
+      <CreateTodo />
+    </div>
+  );
 }
 
 export default App;
