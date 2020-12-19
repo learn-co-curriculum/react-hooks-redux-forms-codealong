@@ -240,7 +240,7 @@ The `handleSubmit()` function:
 ```js
 // ./src/features/todos/CreateTodo.js
 
-function handleSubmit() {
+function handleSubmit(event) {
   event.preventDefault();
   dispatch(todoAdded(text));
 }
@@ -253,7 +253,7 @@ will be sent off to our reducer via our dispatched action. The fully
 redux'd component ends up looking the like the following:
 
 ```js
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { todoAdded } from "./todosSlice";
 
@@ -265,7 +265,7 @@ function CreateTodo() {
     setText(event.target.value);
   }
 
-  function handleSubmit() {
+  function handleSubmit(event) {
     event.preventDefault();
     dispatch(todoAdded(text));
   }
