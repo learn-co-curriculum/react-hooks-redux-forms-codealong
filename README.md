@@ -26,7 +26,7 @@ form.
 
 So in that file we want to change our component to look like the following:
 
-```js
+```jsx
 // ./src/features/todos/CreateTodo.js
 
 import React from "react";
@@ -83,7 +83,7 @@ Every time the input is changed, we want to change the state. To do this we
 first add an event handler for every input that changes. So inside the
 createTodo component, we change our render function to the following.
 
-```js
+```jsx
 // ./src/features/todos/CreateTodo.js
 
 import React from "react";
@@ -113,7 +113,7 @@ Okay, our code calls the `handleChange()` function each time the user types in
 the input, but we still need to write that `handleChange` function. Let's start
 with the old way, setting a state value:
 
-```js
+```jsx
 // ./src/features/todos/CreateTodo.js
 import React, { useState } from "react";
 
@@ -147,7 +147,7 @@ component will re-render and display the new value for `text`.
 
 The `CreateTodo` component should look like the following now:
 
-```js
+```jsx
 // ./src/features/todos/CreateTodo.js
 import React, { useState } from "react";
 
@@ -190,7 +190,7 @@ submit, we dispatch an action to the store. Notice that a lot of the setup for
 Redux is already done for you. Open up the `./src/index.js` file. There you'll
 see the following:
 
-```js
+```jsx
 // ./src/index.js
 import React from "react";
 import ReactDOM from "react-dom";
@@ -229,7 +229,7 @@ action.
 Now we need to update the `CreateTodo` component to call a callback on the
 submission of a form:
 
-```js
+```jsx
 // ./src/features/todos/CreateTodo.js
 
 <form onSubmit={handleSubmit}>
@@ -252,7 +252,7 @@ When `handleSubmit()` is called, whatever is currently stored in `text`
 will be sent off to our reducer via our dispatched action. The fully
 redux'd component ends up looking the like the following:
 
-```js
+```jsx
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { todoAdded } from "./todosSlice";
