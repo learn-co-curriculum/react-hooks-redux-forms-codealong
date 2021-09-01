@@ -1,15 +1,14 @@
 # Creating Items with Redux
 
+## Learning Goals
+
+- Dispatch actions to the Redux store from a React component
+- Update state in Redux based on an action
+
 ## Introduction
 
 With this lesson, we will begin our journey in implementing the CRUD actions while
 using the Redux pattern.
-
-## Objectives
-
-By the end of this lesson, you will be able to:
-
-- Take user input from our **React** application and send information to **Redux**
 
 ## Our Goal
 
@@ -19,7 +18,7 @@ submit button.
 
 ## Create The Form in React
 
-Okay, if you boot up the application (run `npm install && npm start`), you'll
+If you boot up the application (run `npm install && npm start`), you'll
 see that there in the `./src/App.js` file we reference a `CreateTodo` form located
 at `./src/features/todos/CreateTodo.js`. That's where we need to build our
 form.
@@ -109,7 +108,7 @@ All this code does is say that every time the user changes the input field (that
 is, whenever the user types something in) we should call our `handleChange()`
 function (which we haven't written yet).
 
-Okay, our code calls the `handleChange()` function each time the user types in
+Our code calls the `handleChange()` function each time the user types in
 the input, but we still need to write that `handleChange` function. Let's start
 with the old way, setting a state value:
 
