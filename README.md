@@ -7,21 +7,20 @@
 
 ## Introduction
 
-With this lesson, we will begin our journey in implementing the CRUD actions while
-using the Redux pattern.
+With this lesson, we will begin our journey in implementing the CRUD actions
+while using the Redux pattern.
 
 ## Our Goal
 
-We'll build a form in **Redux** that allows us to create a list of todos. So
-this is a form that would have only one input, for the name of the todo, and the
-submit button.
+We'll build a form in Redux that allows us to create a list of todos. This is a
+form that would have only one input, for the name of the todo, and the submit
+button.
 
 ## Create The Form in React
 
-If you boot up the application (run `npm install && npm start`), you'll
-see that there in the `./src/App.js` file we reference a `CreateTodo` form located
-at `./src/features/todos/CreateTodo.js`. That's where we need to build our
-form.
+If you boot up the application (run `npm install && npm start`), you'll see that
+there in the `src/App.js` file we reference a `CreateTodo` form located at
+`src/features/todos/CreateTodo.js`. That's where we need to build our form.
 
 So in that file we want to change our component to look like the following:
 
@@ -49,9 +48,8 @@ export default CreateTodo;
 
 ## Plan for Integrating into Redux
 
-Now let's think about how we want to integrate this into **Redux**. Essentially,
-upon submitting the form, we would like to dispatch the following action to the
-store:
+Let's think about how we want to integrate this into Redux. Upon submitting the
+form, we would like to dispatch the following action to the store:
 
 ```js
 const action = {
@@ -60,7 +58,7 @@ const action = {
 };
 ```
 
-So if the user has typed in buy groceries, our action would look like:
+If the user has typed in buy groceries, our action would look like:
 
 ```js
 const action = {
@@ -69,24 +67,26 @@ const action = {
 };
 ```
 
-But how do we get that text from the form's input? Well, we can use our normal
-React trick of updating the `CreateTodo` component's state whenever someone
-types something into the form. Then, when the user clicks on the submit button,
-we can grab that state, and call
-`dispatch({ type: 'todos/todoAdded', payload: text })`. Ok, time to implement it. Step
-one will be updating the component state whenever someone types in the form.
+How do we get that text from the form's input? Well, we can use our normal React
+trick of updating the `CreateTodo` component's state whenever someone types
+something into the form. Then, when the user clicks on the submit button, we can
+grab that state, and call:
 
-### 1. Create a Controlled Form Using State and an `onChange` Event Handler
+```js
+dispatch({ type: "todos/todoAdded", payload: text });
+```
+
+Time to implement it! Step one will be updating the component state whenever
+someone types in the form.
+
+### 1. Create a Controlled Form
 
 Every time the input is changed, we want to change the state. To do this we
-first add an event handler for every input that changes. So inside the
-createTodo component, we change our render function to the following.
+first add an event handler for every input that changes. Inside the `CreateTodo`
+component, we change our returned JSX to the following:
 
 ```jsx
 // ./src/features/todos/CreateTodo.js
-
-import React from "react";
-
 function CreateTodo() {
   return (
     <div>
@@ -100,17 +100,15 @@ function CreateTodo() {
     </div>
   );
 }
-
-export default CreateTodo;
 ```
 
 All this code does is say that every time the user changes the input field (that
 is, whenever the user types something in) we should call our `handleChange()`
 function (which we haven't written yet).
 
-Our code calls the `handleChange()` function each time the user types in
-the input, but we still need to write that `handleChange` function. Let's start
-with the old way, setting a state value:
+Our code calls the `handleChange()` function each time the user types in the
+input, but we still need to write that `handleChange` function. Let's start with
+the old way, setting a state value:
 
 ```jsx
 // ./src/features/todos/CreateTodo.js
@@ -135,8 +133,6 @@ function CreateTodo() {
     </div>
   );
 }
-
-export default CreateTodo;
 ```
 
 To make a completely controlled form, we will also need to set the `value`
@@ -174,20 +170,20 @@ function CreateTodo() {
 export default CreateTodo;
 ```
 
-**Note**: Inside the render function, we wrapped our form in a `div`, and then
-at the bottom of that `div` we've added the line `{text}`. This isn't necessary
-for functionality, but we do this just to visually confirm that we are properly
-changing the state. If we see our DOM change with every character we type in,
-we're in good shape.
+**Note**: Inside the returned JSX, we wrapped our form in a `div`, and then at
+the bottom of that `div` we've added a `<p>` tag to display the text from state.
+This isn't necessary for functionality, but we do this just to visually confirm
+that we are properly changing the state. If we see our DOM change with every
+character we type in, we're in good shape.
 
 It's on to step 2.
 
-### 2. On Submission of Form, Dispatch an Action to the Store
+### 2. Handle Form Submit and Dispatch an Action
 
-Okay, so now we need to make changes to our form so that when the user clicks
-submit, we dispatch an action to the store. Notice that a lot of the setup for
-Redux is already done for you. Open up the `./src/index.js` file. There you'll
-see the following:
+We need to make changes to our form so that when the user clicks submit, we
+dispatch an action to the store. Notice that a lot of the setup for Redux is
+already done for you. Open up the `./src/index.js` file. There you'll see the
+following:
 
 ```jsx
 // ./src/index.js
@@ -208,7 +204,8 @@ ReactDOM.render(
 Our application is wrapped in the `Provider` component from `react-redux`, which
 allows us to access our Redux store from any component we like.
 
-Ok, let's connect the `CreateTodo`. We'll want to import `useDispatch`, as well as our action creator:
+Let's give the `CreateTodo` component a way to update the store. We'll want to
+import `useDispatch`, as well as our action creator:
 
 ```js
 // ./src/features/todos/CreateTodo.js
@@ -247,9 +244,9 @@ function handleSubmit(event) {
 // ...
 ```
 
-When `handleSubmit()` is called, whatever is currently stored in `text`
-will be sent off to our reducer via our dispatched action. The fully
-redux'd component ends up looking the like the following:
+When `handleSubmit()` is called, whatever is currently stored in `text` will be
+sent off to our reducer via our dispatched action. The full component ends up
+looking the like the following:
 
 ```jsx
 import React, { useState } from "react";
@@ -291,10 +288,15 @@ the reducer with the action.
 
 ### 3. Update State
 
-So we are properly dispatching the action, but the state is not being updated.
-What could be the problem? Well remember our crux of redux flow: Action ->
-Reducer -> New State. So if the action is properly dispatched, then our problem
-must lie with our reducer. Open up the file `./src/features/todos/todoSlice.js`.
+We are properly dispatching the action, but the state is not being updated. What
+could be the problem? Well remember our crux of Redux flow:
+
+```txt
+Action -> Reducer -> New State
+```
+
+If the action is properly dispatched, our problem must lie with our reducer.
+Open up the file `./src/features/todos/todoSlice.js`.
 
 There is a `todoAdded` method in our reducer, but currently it does nothing:
 
@@ -318,21 +320,19 @@ todoAdded(state, action) {
 },
 ```
 
-Ok, once you change the `todoAdded()` reducer to the above function, open up the
+Once you change the `todoAdded()` reducer to the above function, open up the
 Redux DevTools in your browser, and try clicking the submit button a few times.
 The DevTools will show that our reducer is adding new values every time the form
 is submitted!
 
-## Summary
+## Conclusion
 
 There's a lot of typing in this section, but three main steps.
 
 - First, we made sure the React component of our application was working. We did
   this by building a form, and then making sure that whenever the user typed in
   the form's input, the state was updated.
-
-- Second, we connected the component to **Redux** by importing the `useDispatch`
+- Second, we connected the component to Redux by importing the `useDispatch`
   hook, along with the action creator
-
 - Third, we built our reducer such that it responded to the appropriate event
   and concatenated the payload into our array of todos.
